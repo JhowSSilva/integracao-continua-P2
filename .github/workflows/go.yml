@@ -30,9 +30,15 @@ jobs:
       
     - name: Build-DB
       run: docker compose build
-      
-    - name: Create-DB
+  
+    - name: Create-DB  
       run: docker compose up -d
+
+    - name: Wait for database
+      run: |
+        echo "Aguardando PostgreSQL ficar disponível..."
+        timeout 60 bash -c 'until docker compose exec -T db pg_isready -h localhost -p 5432 -U root; do echo "Aguardando..."; sleep 2; done'
+        echo "PostgreSQL está pronto!"
 
     - name: Test
       run: go test -v main_test.go 
