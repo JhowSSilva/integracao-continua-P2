@@ -18,6 +18,15 @@ jobs:
       with:
         username: jhowssilva
         
-        password: ${{ secrets.PASSWORD_DOCKER_HUB }}
-          
+        password: ${{ secrets.PASSWORD_DOCKER_HUB }
+
+    - name: Build and push Docker images            
+      uses: docker/build-push-action@v6.18.0
+      with:
+        context: .
+      
+        file: ./
+        push: true
     
+        tags: jhowssilva/go_ci:${{github.ref_name}}
+          
