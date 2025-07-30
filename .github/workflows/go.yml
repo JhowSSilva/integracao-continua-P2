@@ -42,7 +42,6 @@ jobs:
     - name: Test
       run: go test -v main_test.go 
       
-  
   build:
     needs: test
     runs-on: ubuntu-latest
@@ -51,17 +50,19 @@ jobs:
     - name: Build
       run: go build -v main.go
 
-      
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v4.6.2
       with:
         name: API
         path: main
             
-
-
   docker:
     needs: build
     uses: ./.github/workflows/Docker.yml
+    secrets: inherit
+
+  Deploy_EC2:
+    needs: build
+    uses: ./.github/workflows/EC2.yml
     secrets: inherit
     
