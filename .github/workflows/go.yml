@@ -13,7 +13,11 @@ jobs:
     strategy:
       matrix:
         go_version: ['1.18', '1.17', '>=1.18']
+<<<<<<< HEAD
+        os: ['ubuntu-latest', 'ubuntu-18.04']
+=======
         os: ['ubuntu-latest', 'ubuntu-23.10']
+>>>>>>> refs/remotes/origin/main
     steps:
     - uses: actions/checkout@v3
 
