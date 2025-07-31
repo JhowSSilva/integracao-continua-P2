@@ -44,7 +44,7 @@ jobs:
           nohup ./main > app.log 2>&1 &
 
           sleep 3
-
+          
           if pgrep -f "./main" > /dev/null; then
             echo "✅ Aplicação iniciada com sucesso!"
             echo "🔍 Processo PID: $(pgrep -f './main')"
@@ -54,12 +54,17 @@ jobs:
             tail -10 app.log
             exit 1
           fi
-
           sleep 2
           if curl -f http://localhost:8000/ > /dev/null 2>&1; then
             echo "✅ API respondendo na porta 8000!"
           else
             echo "⚠️  API não está respondendo na porta 8000"
             echo "📋 Verificando portas abertas:"
-            netstat -tlnp | grep :8000 || echo "Porta 8000 não encontrada"
+            ss -tlnp | grep :8000 || echo "Porta 8000 não encontrada"
+            echo "📋 Todas as portas escutando:"
+            ss -tlnp | grep LISTEN | head -10
+            echo "📋 Verificando se o processo ainda está rodando:"
+            ps aux | grep "./main" | grep -v grep || echo "Processo não encontrado"
+            echo "📋 Últimas linhas do log da aplicação:"
+            tail -20 app.log || echo "Log não encontrado"
           fi
