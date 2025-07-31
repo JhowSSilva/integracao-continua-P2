@@ -1,4 +1,4 @@
-name: CD
+name: Entrega continua
 
 on:
   workflow_call:
@@ -9,29 +9,32 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Download a Build Artifact
-      uses: actions/download-artifact@v4.3.0
+      uses: actions/download-artifact@v3.0.0
       with:
-  
-        name: API
+        name: programa
     - uses: actions/checkout@v3
-
+    
     - name: Deploy to Staging server
       uses: easingthemes/ssh-deploy@main
-      with:
+      env:
         SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         REMOTE_HOST: ${{ secrets.REMOTE_HOST }}
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: /home/${{ secrets.REMOTE_USER }}
         EXCLUDE: "postgres-data"
         
-    - name: Execute remote SSH commands using password
-      uses: appleboy/ssh-action@v1
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.REMOTE_HOST }}
         username: ${{ secrets.REMOTE_USER }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: 22
         script: |
+          # Parar processo anterior se existir
+          pkill -f "./main" || true
+          
+          # Configurar variáveis de ambiente
           export HOST=${{ secrets.DBHOST }}
           export USER=${{ secrets.DBUSER }}
           export PASSWORD=${{ secrets.DBPASSWORD }}
@@ -39,4 +42,23 @@ jobs:
           export DBPORT=${{ secrets.DBPORT }}
           export PORT=8000
           chmod +x main
-          nohup ./main > nohup.out 2> nohup.err < /dev/null &
+          nohup ./main > app.log 2>&1 &
+          sleep 3
+          if pgrep -f "./main" > /dev/null; then
+            echo "✅ Aplicação iniciada com sucesso!"
+            echo "🔍 Processo PID: $(pgrep -f './main')"
+            
+          else
+            echo "❌ Falha ao iniciar a aplicação!"
+            echo "📋 Últimas linhas do log:"
+            tail -10 app.log
+            exit 1
+          fi
+          sleep 2
+          if curl -f http://localhost:8000/ > /dev/null 2>&1; then
+            echo "✅ API respondendo na porta 8000!"
+          else
+            echo "⚠️  API não está respondendo na porta 8000"
+            echo "📋 Verificando portas abertas:"
+            netstat -tlnp | grep :8000 || echo "Porta 8000 não encontrada"
+          fi
