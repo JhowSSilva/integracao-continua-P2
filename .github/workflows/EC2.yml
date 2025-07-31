@@ -23,8 +23,7 @@ jobs:
         REMOTE_USER: ${{ secrets.REMOTE_USER }}
         TARGET: /home/${{ secrets.REMOTE_USER }}
         EXCLUDE: "postgres-data"
-
-
+        
     - name: Execute remote SSH commands using password
       uses: appleboy/ssh-action@v1
       with:
@@ -41,3 +40,4 @@ jobs:
           export PORT=8000
           chmod +x main
           nohup ./main &
+
