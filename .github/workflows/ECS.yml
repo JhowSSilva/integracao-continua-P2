@@ -1,0 +1,10 @@
+name: CD
+
+on:
+  workflow_call:
+
+jobs:
+
+  ECS:
+    runs-on: ubuntu-latest
+    steps:
