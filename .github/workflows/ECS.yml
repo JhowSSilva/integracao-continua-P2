@@ -24,7 +24,7 @@ jobs:
       uses: aws-actions/amazon-ecs-render-task-definition@v1
       with:
         task-definition: task-definition.json
-        container-name: API_Go_Test
+        container-name: go
         image: jhowssilva/go_ci:main
         environment-variables: |
            HOST=${{ secrets.DBHOST }}
@@ -33,3 +33,11 @@ jobs:
            DBNAME=${{ secrets.DBNAME }}
            DBPORT=${{ secrets.DBPORT }}
            PORT=8000
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v2
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: Tarefa_Go_Api_Test-service-ow2nenr8
+        cluster: API_Go_Test
+        wait-for-service-stability: true
