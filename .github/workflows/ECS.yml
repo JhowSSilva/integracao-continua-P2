@@ -8,3 +8,5 @@ jobs:
   ECS:
     runs-on: ubuntu-latest
     steps:
+    - name: Obtendo arquivo
+      run: aws ecs describe-task-definition --task-definition Tarefa_Go_Api_Test --query taskDefinition > task-definition.json
