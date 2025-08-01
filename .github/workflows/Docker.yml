@@ -34,5 +34,5 @@ jobs:
         file: ./Dockerfile
         push: true
     
-        tags: jhowssilva/go_ci:${{github.ref_name}}
+        tags: jhowssilva/go_ci:${{github.run_number}}
           
