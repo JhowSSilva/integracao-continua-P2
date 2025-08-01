@@ -19,4 +19,17 @@ jobs:
     - name: Getting file
       run: aws ecs describe-task-definition --task-definition Tarefa_Go_Api_Test --query taskDefinition > task-definition.json
       
-    
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: API_Go_Test
+        image: jhowssilva/go_ci:main
+        environment-variables: |
+           HOST=${{ secrets.DBHOST }}
+           USER=${{ secrets.DBUSER }}
+           PASSWORD=${{ secrets.DBPASSWORD }}
+           DBNAME=${{ secrets.DBNAME }}
+           DBPORT=${{ secrets.DBPORT }}
+           PORT=8000
