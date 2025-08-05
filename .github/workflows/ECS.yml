@@ -44,3 +44,7 @@ jobs:
         service: Tarefa_Go_Api_Test_01
         cluster: API_Go_Test
         wait-for-service-stability: true
+
+    - name: request
+      continue-on-error: true
+      run: sleep 30s ; wget LB-API-Go-Test-570404304.us-east-1.elb.amazonaws.com:8000/teste
