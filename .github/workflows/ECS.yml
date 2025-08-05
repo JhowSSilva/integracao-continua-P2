@@ -17,7 +17,7 @@ jobs:
         aws-region: us-east-1
         
     - name: Getting file
-      run: aws ecs describe-task-definition --task-definition Tarefa_Go_Api_Test --query taskDefinition > task-definition.json
+      run: aws ecs describe-task-definition --task-definition Tarefa_Go_Api --query taskDefinition > task-definition.json
       
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
