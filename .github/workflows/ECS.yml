@@ -38,6 +38,6 @@ jobs:
       uses: aws-actions/amazon-ecs-deploy-task-definition@v2
       with:
         task-definition: ${{ steps.task-def.outputs.task-definition }}
-        service: Tarefa_Go_Api_Test
+        service: Tarefa_Go_Api_Test_01
         cluster: API_Go_Test
         wait-for-service-stability: true
